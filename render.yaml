@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: telegram-form-server
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn app:app
