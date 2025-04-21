@@ -8,7 +8,7 @@ used_ips = set()
 
 @app.route("/submit", methods=["POST"])
 def handle_form():
-    data = request.json
+    data = request.form
     ip = request.remote_addr
     username = data.get("telegram", "").strip().lstrip('@')
 
