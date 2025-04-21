@@ -41,5 +41,5 @@ def handle_form():
     used_ips.add(ip)
     return jsonify({"link": "https://t.me/+APbxtoSb76hmZWZl"})  # Replace with your actual Telegram group link
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     app.run(debug=True)
