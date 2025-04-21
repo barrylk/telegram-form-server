@@ -1,0 +1,50 @@
+<!-- templates/form.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Join Telegram Group</title>
+</head>
+<body>
+  <h2>Fill the form to get the link</h2>
+  <form id="userForm">
+    <input type="text" name="fullname" placeholder="Full Name" required><br><br>
+    <input type="text" name="phone" placeholder="Phone Number" required><br><br>
+    <input type="text" name="towncity" placeholder="Town/City" required><br><br>
+    <input type="number" name="age" placeholder="Age" required><br><br>
+    <input type="text" name="telegram" placeholder="Telegram Username" required><br><br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    document.getElementById("userForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        fullname: form.fullname.value.trim(),
+        phone: form.phone.value.trim(),
+        towncity: form.towncity.value.trim(),
+        age: form.age.value.trim(),
+        telegram: form.telegram.value.trim()
+      };
+
+      fetch("/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(response => {
+        if (response.link) {
+          window.location.href = response.link;
+        } else {
+          alert(response.error || "Something went wrong.");
+        }
+      })
+      .catch(err => {
+        alert("Network error. Try again.");
+        console.error(err);
+      });
+    });
+  </script>
+</body>
+</html>
