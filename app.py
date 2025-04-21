@@ -16,8 +16,9 @@ def handle_form():
     ip = request.remote_addr
     username = data.get("telegram", "").strip().lstrip('@')
 
-    if not all([data.get(k) for k in ["fullname", "phone", "towncity", "age", "telegram"]]):
-        return jsonify({"error": "All fields required."}), 400
+    required_fields = ["fullname", "phone", "towncity", "age", "telegram", "location"]
+    if not all(data.get(field) for field in required_fields):
+        return jsonify({"error": "All fields are required, including location."}), 400
 
     if ip in used_ips:
         return jsonify({"error": "This device/IP has already used the form."}), 403
@@ -27,7 +28,18 @@ def handle_form():
         return jsonify({"error": "This Telegram username has already used the form."}), 403
 
     with open(filepath, "w") as f:
-        json.dump(data, f, indent=2)
+        json.dump({
+            "Full Name": data["fullname"],
+            "Phone Number": data["phone"],
+            "Town/City": data["towncity"],
+            "Age": data["age"],
+            "Telegram": username,
+            "IP Address": ip,
+            "Location": data["location"]
+        }, f, indent=2)
 
     used_ips.add(ip)
-    return jsonify({"link": "https://t.me/+APbxtoSb76hmZWZl"})  # Replace with your real link
+    return jsonify({"link": "https://t.me/+APbxtoSb76hmZWZl"})  # Replace with your actual Telegram group link
+
+if _name_ == "_main_":
+    app.run(debug=True)
