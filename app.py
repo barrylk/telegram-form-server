@@ -12,7 +12,7 @@ def index():
 
 @app.route("/submit", methods=["POST"])
 def handle_form():
-    data = request.form
+    data = request.get_json()
     ip = request.remote_addr
     username = data.get("telegram", "").strip().lstrip('@')
 
