@@ -6,6 +6,10 @@ DATA_DIR = "user_data"
 os.makedirs(DATA_DIR, exist_ok=True)
 used_ips = set()
 
+@app.route("/")
+def index():
+    return render_template("form.html")
+
 @app.route("/submit", methods=["POST"])
 def handle_form():
     data = request.form
