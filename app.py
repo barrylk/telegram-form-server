@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import os, json
 
-app = Flask(_name_)
+app = Flask(__name__)
 DATA_DIR = "user_data"
 os.makedirs(DATA_DIR, exist_ok=True)
 used_ips = set()
