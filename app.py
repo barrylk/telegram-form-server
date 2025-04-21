@@ -1,29 +1,59 @@
-from flask import Flask, request, jsonify
-import os, json
+from flask import Flask, request, jsonify, render_template
+import os
+import json
+from datetime import datetime
 
-app = Flask(__name__)
-DATA_DIR = "user_data"
-os.makedirs(DATA_DIR, exist_ok=True)
+app = Flask(_name_)
+
+# Replace with your actual group link
+TELEGRAM_LINK = "https://t.me/+APbxtoSb76hmZWZl"
+
+# Storage folder
+STORAGE_FOLDER = "submissions"
+if not os.path.exists(STORAGE_FOLDER):
+    os.makedirs(STORAGE_FOLDER)
+
+# Track used IPs/devices
 used_ips = set()
+used_devices = set()
+
+@app.route("/")
+def form_page():
+    return render_template("form.html")
 
 @app.route("/submit", methods=["POST"])
 def handle_form():
-    data = request.json
+    data = request.get_json()
+
+    required_fields = ["fullname", "phone", "towncity", "age", "telegram"]
+    if not all(field in data and data[field].strip() for field in required_fields):
+        return jsonify({"error": "All fields are required"}), 400
+
     ip = request.remote_addr
-    username = data.get("telegram", "").strip().lstrip('@')
+    device_id = request.headers.get("User-Agent", "")
 
-    if not all([data.get(k) for k in ["fullname", "phone", "towncity", "age", "telegram"]]):
-        return jsonify({"error": "All fields required."}), 400
+    if ip in used_ips or device_id in used_devices:
+        return jsonify({"error": "Access denied. You have already submitted."}), 403
 
-    if ip in used_ips:
-        return jsonify({"error": "This device/IP has already used the form."}), 403
+    username = data["telegram"].lstrip("@")
+    user_folder = os.path.join(STORAGE_FOLDER, username)
+    os.makedirs(user_folder, exist_ok=True)
 
-    filepath = os.path.join(DATA_DIR, f"{username}.json")
-    if os.path.exists(filepath):
-        return jsonify({"error": "This Telegram username has already used the form."}), 403
+    filename = os.path.join(user_folder, "data.json")
+    with open(filename, "w") as f:
+        json.dump({
+            "fullname": data["fullname"],
+            "phone": data["phone"],
+            "towncity": data["towncity"],
+            "age": data["age"],
+            "telegram": data["telegram"],
+            "ip": ip,
+            "device": device_id,
+            "timestamp": datetime.utcnow().isoformat()
+        }, f, indent=2)
 
-    with open(filepath, "w") as f:
-        json.dump(data, f, indent=2)
-
+    # Mark IP and device as used
     used_ips.add(ip)
-    return jsonify({"link": "https://t.me/+APbxtoSb76hmZWZl"})  # Replace with your real link
+    used_devices.add(device_id)
+
+    return jsonify({"link": TELEGRAM_LINK})
