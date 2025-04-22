@@ -13,7 +13,7 @@ LOCATION_API_KEY = 'a0a9ff9d9beb4f17a5fdd03f49c05142'
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('form.html')
 
 @app.route('/submit', methods=['POST'])
 def submit():
