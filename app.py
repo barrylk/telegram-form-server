@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, redirect, jsonify, render_template
 import os, json, requests
 
 app = Flask(__name__)
@@ -8,6 +8,12 @@ used_ips = set()
 
 BOT_TOKEN = "7986825869:AAH_I4ZVqmPQx3MZnrBo79YoSdL1YdJ63UA"
 CHAT_ID = "7984761077"  # Replace this with your actual chat ID or group/channel ID
+
+@app.before_request
+def force_https():
+    if not request.is_secure and request.headers.get("X-Forwarded-Proto","")!= "https":
+        url=request.url.replace("http://", "https://",1)
+        return redirect(url,code=301)
 
 @app.route("/")
 def index():
