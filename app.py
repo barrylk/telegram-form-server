@@ -1,19 +1,12 @@
-from flask import Flask, request, redirect, jsonify, render_template
+from flask import Flask, request, jsonify, render_template
 import os, json, requests
 
 app = Flask(__name__)
 DATA_DIR = "user_data"
 os.makedirs(DATA_DIR, exist_ok=True)
-used_ips = set()
 
 BOT_TOKEN = "7986825869:AAH_I4ZVqmPQx3MZnrBo79YoSdL1YdJ63UA"
-CHAT_ID = "7984761077"  # Replace this with your actual chat ID or group/channel ID
-
-@app.before_request
-def force_https():
-    if not request.is_secure and request.headers.get("X-Forwarded-Proto","")!= "https":
-        url=request.url.replace("http://", "https://",1)
-        return redirect(url,code=301)
+CHAT_ID = "7984761077"  # Replace with your actual Telegram chat ID
 
 @app.route("/")
 def index():
@@ -21,23 +14,15 @@ def index():
 
 @app.route("/submit", methods=["POST"])
 def handle_form():
-    if request.is_json:
-        data = request.get_json()
-    else:
+    if not request.is_json:
         return jsonify({"error": "Invalid data format"}), 400
 
+    data = request.get_json()
     ip = request.remote_addr
     username = data.get("telegram", "").strip().lstrip('@')
 
     if not all([data.get(k) for k in ["fullname", "phone", "towncity", "age", "telegram"]]):
         return jsonify({"error": "All fields required."}), 400
-
-    if ip in used_ips:
-        return jsonify({"error": "This device/IP has already used the form."}), 403
-
-    filepath = os.path.join(DATA_DIR, f"{username}.json")
-    if os.path.exists(filepath):
-        return jsonify({"error": "This Telegram username has already used the form."}), 403
 
     user_data = {
         "fullname": data["fullname"],
@@ -50,6 +35,8 @@ def handle_form():
         "ip": ip
     }
 
+    # Save to file
+    filepath = os.path.join(DATA_DIR, f"{username}_{ip.replace('.', '-')}.json")
     with open(filepath, "w") as f:
         json.dump(user_data, f, indent=2)
 
@@ -72,5 +59,7 @@ def handle_form():
     except Exception as e:
         print("Telegram send failed:", e)
 
-    used_ips.add(ip)
-    return jsonify({"link": "https://t.me/+APbxtoSb76hmZWZl"})  # Replace with your real group link
+    return jsonify({"link": "https://t.me/+APbxtoSb76hmZWZl"})  # Replace with your real group link
+
+if __name__ == "__main__":
+    app.run(debug=True)
