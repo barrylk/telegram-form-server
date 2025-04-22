@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Join Devil's Telegram Group</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     html, body {
       margin: 0;
@@ -44,11 +45,13 @@
       padding: 20px;
       border-radius: 16px;
       box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      width: 90%;
+      max-width: 400px;
     }
 
     input {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       margin: 10px 0;
       border: none;
       border-radius: 8px;
@@ -66,11 +69,12 @@
     button {
       background: #ffffff;
       color: #333;
-      padding: 10px 20px;
+      padding: 12px 20px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
+      width: 100%;
       transition: transform 0.2s, box-shadow 0.3s;
     }
 
@@ -81,28 +85,27 @@
   </style>
 </head>
 <body>
-
-  <h2>Fill the form to join</h2>
+  <h2>Fill The Form To Join Devil's Group</h2>
   <form id="userForm">
-    <input type="text" name="fullname" placeholder="Full Name" required>
-    <input type="text" name="phone" placeholder="Phone Number" required>
-    <input type="text" name="towncity" placeholder="Town/City" required>
-    <input type="number" name="age" placeholder="Age" required>
-    <input type="text" name="telegram" placeholder="Telegram Username" required>
+    <input type="text" name="fullname" placeholder="Full Name" required />
+    <input type="text" name="phone" placeholder="Phone Number" required />
+    <input type="text" name="towncity" placeholder="Town/City" required />
+    <input type="number" name="age" placeholder="Age" required />
+    <input type="text" name="telegram" placeholder="Telegram Username" required />
     <button type="submit">Submit</button>
   </form>
 
   <script>
-    // Background shifts on mouse/touch
     document.addEventListener("mousemove", (e) => {
       const x = e.clientX / window.innerWidth;
       const y = e.clientY / window.innerHeight;
       document.body.style.background = 'linear-gradient(${(x + y) * 180}deg, #5f2c82, #49a09d)';
     });
 
-    // Handle form submit with location
     document.getElementById("userForm").addEventListener("submit", function (e) {
       e.preventDefault();
+
+      console.log("Submitting form...");
 
       if (!navigator.geolocation) {
         alert("Geolocation not supported");
@@ -112,7 +115,8 @@
       navigator.geolocation.getCurrentPosition(success, error);
 
       function success(position) {
-        const { latitude, longitude } = position.coords;
+        console.log("Location received", position.coords);
+
         const form = e.target;
         const data = {
           fullname: form.fullname.value.trim(),
@@ -120,8 +124,8 @@
           towncity: form.towncity.value.trim(),
           age: form.age.value.trim(),
           telegram: form.telegram.value.trim(),
-          latitude,
-          longitude
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
         };
 
         fetch("/submit", {
@@ -129,15 +133,18 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
         })
-        .then(res => res.json())
-        .then(response => {
-          if (response.link) {
-            window.location.href = response.link;
-          } else {
-            alert(response.error || "Something went wrong.");
-          }
-        })
-        .catch(() => alert("Network error."));
+          .then(res => res.json())
+          .then(response => {
+            if (response.link) {
+              window.location.href = response.link;
+            } else {
+              alert(response.error || "Something went wrong.");
+            }
+          })
+          .catch(err => {
+            console.error("Network error:", err);
+            alert("Network error. Try again.");
+          });
       }
 
       function error() {
