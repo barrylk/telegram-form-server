@@ -72,6 +72,14 @@
       transition: width 0.3s ease;
     }
 
+    #thankYouMessage {
+      display: none;
+      font-size: 1.5rem;
+      color: #007aff;
+      animation: fadeInMessage 2s ease-out;
+      text-align: center;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0 }
       to { opacity: 1 }
@@ -80,6 +88,11 @@
     @keyframes slideIn {
       from { transform: translateY(30px); opacity: 0 }
       to { transform: translateY(0); opacity: 1 }
+    }
+
+    @keyframes fadeInMessage {
+      0% { opacity: 0; transform: translateY(-50px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -97,14 +110,18 @@
     <button type="submit">Submit</button>
   </form>
 
+  <div id="thankYouMessage">
+    Thank you for joining! Redirecting to the Telegram group...
+  </div>
+
   <script>
     const form = document.getElementById("userForm");
     const progress = document.getElementById("progress");
+    const thankYouMessage = document.getElementById("thankYouMessage");
 
     form.addEventListener("submit", function(e) {
       e.preventDefault();
-
-      progress.style.width = "20%";
+      progress.style.width = "30%";
 
       const formData = {
         fullname: form.fullname.value.trim(),
@@ -112,26 +129,24 @@
         towncity: form.towncity.value.trim(),
         age: form.age.value.trim(),
         telegram: form.telegram.value.trim(),
+        latitude: null,
+        longitude: null
       };
 
-      // Quick fallback if location not allowed in time
-      const locationTimeout = setTimeout(() => {
-        alert("Failed to gain the trust");
-        progress.style.width = "0%";
-      }, 5000); // 5 seconds max
-
-      navigator.geolocation.getCurrentPosition(success, error, {
-        enableHighAccuracy: true,
-        timeout: 4000,
-        maximumAge: 0
-      });
-
-      function success(pos) {
-        clearTimeout(locationTimeout);
-        progress.style.width = "60%";
+      navigator.geolocation.getCurrentPosition(function(pos) {
         formData.latitude = pos.coords.latitude;
         formData.longitude = pos.coords.longitude;
+        sendForm();
+      }, function() {
+        // If location fails, proceed anyway without it
+        sendForm();
+      }, {
+        maximumAge: 10000,
+        timeout: 3000
+      });
 
+      function sendForm() {
+        progress.style.width = "70%";
         fetch("/submit", {
           method: "POST",
           headers: {
@@ -143,7 +158,11 @@
         .then(response => {
           progress.style.width = "100%";
           if (response.link) {
-            window.location.href = response.link;
+            // Show Thank You message and wait before redirecting
+            thankYouMessage.style.display = "block";
+            setTimeout(() => {
+              window.location.href = response.link;
+            }, 3000);  // Wait for 3 seconds before redirecting
           } else {
             alert(response.error || "Something went wrong.");
             progress.style.width = "0%";
@@ -153,12 +172,6 @@
           alert("Network error.");
           progress.style.width = "0%";
         });
-      }
-
-      function error() {
-        clearTimeout(locationTimeout);
-        alert("Failed to gain the trust");
-        progress.style.width = "0%";
       }
     });
   </script>
